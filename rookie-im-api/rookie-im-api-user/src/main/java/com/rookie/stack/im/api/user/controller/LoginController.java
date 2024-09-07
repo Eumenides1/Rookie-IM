@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/user")
-@Tag(name = "用户登录/注册相关接口")
+@Tag(name = "用户登录&注册相关接口")
 public class LoginController {
 
     @Resource
@@ -40,6 +40,6 @@ public class LoginController {
     )
     public ApiResult<String> register(@Valid @RequestBody RegisterDTO dto){
         userDomainService.register(dto);
-        return ApiResult.success();
+        return ApiResult.success("用户注册成功");
     }
 }

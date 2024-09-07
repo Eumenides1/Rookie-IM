@@ -4,8 +4,7 @@ target/
 **/target/
 
 # maven 本地仓库
-.mm/
-repository/
+.mvn/
 
 # eclipse
 .classpath
@@ -18,7 +17,7 @@ repository/
 
 # 日志文件
 *.log
-log/
+logs/
 
 # 临时文件
 *.tmp
@@ -29,3 +28,6 @@ temp/
 
 # 数据库文件（如果项目中有嵌入式数据库文件不想提交）
 *.db
+
+# 配置文件
+application-test.properties
