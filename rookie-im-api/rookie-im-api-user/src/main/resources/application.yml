@@ -33,6 +33,8 @@ rookie:
       xssRule:
         enabled: true
         order: 0
+      authRule:
+        order: 10
 
 # jwt 配置
 jwt:

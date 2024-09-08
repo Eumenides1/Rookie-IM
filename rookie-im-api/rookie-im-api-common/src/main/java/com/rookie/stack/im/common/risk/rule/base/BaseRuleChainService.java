@@ -1,7 +1,14 @@
 package com.rookie.stack.im.common.risk.rule.base;
 
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.rookie.stack.im.common.config.JwtProperties;
+import com.rookie.stack.im.common.exception.BusinessException;
+import com.rookie.stack.im.common.exception.HttpErrorEnum;
+import com.rookie.stack.im.common.model.constants.IMApiConstants;
+import com.rookie.stack.im.common.model.session.UserSessionInfo;
 import com.rookie.stack.im.common.risk.rule.RuleChainService;
+import com.rookie.stack.im.common.utils.JwtUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -74,6 +81,26 @@ public abstract class BaseRuleChainService implements RuleChainService {
             }
         }
         return LOCALHOST_IPV6.equals(ip) ? LOCALHOST_IP : ip;
+    }
+
+    protected UserSessionInfo getUserSessionInfo(HttpServletRequest request){
+        String token = request.getHeader(IMApiConstants.ACCESS_TOKEN);
+        if (StrUtil.isEmpty(token)) {
+            logger.error("BaseRuleChainService|未登录，url|{}",request.getRequestURI());
+            throw new BusinessException(HttpErrorEnum.NO_LOGIN);
+        }
+        //验证 token
+        if(!JwtUtils.checkSign(token, jwtProperties.getAccessTokenSecret())){
+            logger.error("BaseRuleChainService|token已失效，url|{}",request.getRequestURI());
+            throw new BusinessException(HttpErrorEnum.INVALID_TOKEN);
+        }
+        // 存放session
+        String strJson = JwtUtils.getInfo(token);
+        if (StrUtil.isEmpty(strJson)){
+            logger.error("BaseRuleChainService|token已失效，url|{}",request.getRequestURI());
+            throw new BusinessException(HttpErrorEnum.INVALID_TOKEN);
+        }
+        return JSON.parseObject(strJson, UserSessionInfo.class);
     }
 
     /**
