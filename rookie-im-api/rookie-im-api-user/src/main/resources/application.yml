@@ -44,3 +44,8 @@ jwt:
   refreshToken:
     expireIn: ${rookie-im.jwt.refresh.expireIn} #7天
     secret: ${rookie-im.jwt.refresh.secret}
+
+# RSA 配置
+rsa:
+  public-key: ${rookie-im.rsa.publicKey}
+  private-key: ${rookie-im.rsa.privateKey}
