@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s # 默认抓取时间间隔
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['192.168.2.121:9090'] # 监控自己
+  - job_name: 'rookie-im-api-user'
+    metrics_path: '/v1/api/actuator/prometheus'
+    static_configs:
+      - targets: ['192.168.2.121:8001']
+

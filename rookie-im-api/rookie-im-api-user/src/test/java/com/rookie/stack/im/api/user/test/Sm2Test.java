@@ -49,6 +49,6 @@ public class Sm2Test {
         //获得公钥
         rsa.getPublicKey();
         String publicKeyBase64 = rsa.getPublicKeyBase64();
-        System.out.println("公钥："+publicKeyBase64);
+        System.out.println(publicKeyBase64);
     }
 }

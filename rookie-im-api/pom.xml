@@ -30,6 +30,7 @@
         <jwt.version>3.11.0</jwt.version>
         <bcprov.version>1.78.1</bcprov.version>
         <swagger3.version>4.1.0</swagger3.version>
+        <micrometer.version>1.10.6</micrometer.version>
     </properties>
 
     <dependencyManagement>
@@ -80,6 +81,12 @@
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk18on</artifactId>
                 <version>${bcprov.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>${micrometer.version}</version>
             </dependency>
 
             <!--swagger3-->
