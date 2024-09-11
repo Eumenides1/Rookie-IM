@@ -18,6 +18,7 @@ import com.rookie.stack.im.common.model.entity.User;
 import com.rookie.stack.im.common.model.vo.LoginVO;
 import com.rookie.stack.im.common.utils.AssertUtil;
 import com.rookie.stack.im.common.utils.BeanUtils;
+import com.rookie.stack.im.common.utils.JwtUtils;
 import com.rookie.stack.im.common.utils.id.SnowFlakeFactory;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
@@ -55,6 +56,23 @@ public class UserDomainServiceImpl extends ServiceImpl<UserRepository, User> imp
                 user.getUserName(),
                 user.getNickName(),
                 jwtProperties);
+    }
+    @Override
+    public LoginVO refreshToken(String refreshToken) {
+        //验证 token
+        if (!JwtUtils.checkSign(refreshToken, jwtProperties.getRefreshTokenSecret())) {
+            throw new BusinessException("refreshToken无效或已过期");
+        }
+        String strJson = JwtUtils.getInfo(refreshToken);
+        Long userId = JwtUtils.getUserId(refreshToken);
+        String accessToken = JwtUtils.sign(userId, strJson, jwtProperties.getAccessTokenExpireIn(), jwtProperties.getAccessTokenSecret());
+        String newRefreshToken = JwtUtils.sign(userId, strJson, jwtProperties.getRefreshTokenExpireIn(), jwtProperties.getRefreshTokenSecret());
+        LoginVO vo = new LoginVO();
+        vo.setAccessToken(accessToken);
+        vo.setAccessTokenExpiresIn(jwtProperties.getAccessTokenExpireIn());
+        vo.setRefreshToken(newRefreshToken);
+        vo.setRefreshTokenExpiresIn(jwtProperties.getRefreshTokenExpireIn());
+        return vo;
     }
 
     @Override

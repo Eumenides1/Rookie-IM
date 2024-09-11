@@ -19,4 +19,10 @@ public interface UserDomainService extends IService<User> {
      */
     void register(RegisterDTO dto);
 
+    /**
+     * 用refreshToken换取新 token
+     */
+    LoginVO refreshToken(String refreshToken);
+
+
 }
