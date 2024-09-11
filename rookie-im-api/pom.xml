@@ -11,7 +11,6 @@
     <modules>
         <module>rookie-im-api-user</module>
         <module>rookie-im-api-common</module>
-        <module>rookie-graceful-response</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
