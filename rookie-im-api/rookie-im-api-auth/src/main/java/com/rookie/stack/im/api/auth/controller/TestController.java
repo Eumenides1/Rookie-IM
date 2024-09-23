@@ -1,4 +1,4 @@
-package com.rookie.stack.im.api.user.controller;
+package com.rookie.stack.im.api.auth.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -11,6 +11,7 @@
     <modules>
         <module>rookie-im-api-user</module>
         <module>rookie-im-api-common</module>
+        <module>rookie-im-api-auth</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
