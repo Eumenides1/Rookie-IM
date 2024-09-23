@@ -31,6 +31,7 @@
         <bcprov.version>1.78.1</bcprov.version>
         <swagger3.version>4.1.0</swagger3.version>
         <micrometer.version>1.10.6</micrometer.version>
+        <sa-token.version>1.39.0</sa-token.version>
     </properties>
 
     <dependencyManagement>
@@ -94,6 +95,13 @@
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
                 <version>${swagger3.version}</version>
+            </dependency>
+
+            <!-- Sa-Token 权限认证 -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot3-starter</artifactId>
+                <version>${sa-token.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -24,5 +24,4 @@ public interface UserDomainService extends IService<User> {
      */
     LoginVO refreshToken(String refreshToken);
 
-
 }
