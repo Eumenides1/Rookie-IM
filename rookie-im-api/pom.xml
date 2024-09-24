@@ -31,6 +31,8 @@
         <!-- 依赖包版本 -->
         <lombok.version>1.18.30</lombok.version>
         <jackson.version>2.16.1</jackson.version>
+        <mybatis.version>3.5.8</mybatis.version>
+        <druid.version>1.2.23</druid.version>
     </properties>
 
     <dependencyManagement>
@@ -82,6 +84,17 @@
                 <groupId>com.rookie.stack</groupId>
                 <artifactId>rookie-im-rookielog-starter</artifactId>
                 <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <!-- Druid 数据库连接池 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-3-starter</artifactId>
+                <version>${druid.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
