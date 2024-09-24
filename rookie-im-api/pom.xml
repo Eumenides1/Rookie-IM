@@ -7,104 +7,116 @@
     <groupId>com.rookie.stack</groupId>
     <artifactId>rookie-im-api</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <!-- 多模块项目需要配置打包方式为 pom -->
     <packaging>pom</packaging>
+
+    <description>菜鸟 IM</description>
     <modules>
-        <module>rookie-im-api-user</module>
-        <module>rookie-im-api-common</module>
-        <module>rookie-im-api-auth</module>
+        <module>im-auth</module>
+        <module>rookie-stack-framework</module>
     </modules>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
-    </parent>
+
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <!-- JDK 版本 -->
+        <java.version>21</java.version>
+        <spring-boot.version>3.2.4</spring-boot.version>
+        <spring-cloud-alibaba.version>2023.0.1.0</spring-cloud-alibaba.version>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <!-- 项目编码 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mybatisplus-spring-boot-starter.version>3.5.7</mybatisplus-spring-boot-starter.version>
-        <hutool.version>5.3.9</hutool.version>
-        <druid.version>1.1.22</druid.version>
-        <mysql.version>8.0.30</mysql.version>
+        <!-- Maven 相关版本号 -->
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <!-- 依赖包版本 -->
         <lombok.version>1.18.30</lombok.version>
-        <fastjson.version>1.2.40</fastjson.version>
-        <jwt.version>3.11.0</jwt.version>
-        <bcprov.version>1.78.1</bcprov.version>
-        <swagger3.version>4.1.0</swagger3.version>
-        <micrometer.version>1.10.6</micrometer.version>
-        <sa-token.version>1.39.0</sa-token.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- Spring Boot 官方依赖管理 -->
             <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
-                <version>${mybatisplus-spring-boot-starter.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>druid</artifactId>
-                <version>${druid.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
+            <!-- Spring Cloud Alibaba 官方依赖管理 -->
             <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.version}</version>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+
+            <!-- Spring Cloud 官方依赖管理 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.auth0</groupId>
-                <artifactId>java-jwt</artifactId>
-                <version>${jwt.version}</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
-            <dependency>
-                <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk18on</artifactId>
-                <version>${bcprov.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.micrometer</groupId>
-                <artifactId>micrometer-registry-prometheus</artifactId>
-                <version>${micrometer.version}</version>
-            </dependency>
-
-            <!--swagger3-->
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-                <version>${swagger3.version}</version>
-            </dependency>
-
-            <!-- Sa-Token 权限认证 -->
-            <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-spring-boot3-starter</artifactId>
-                <version>${sa-token.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <!-- 统一插件管理 -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <executions>
+                        <execution>
+                            <id>repackage</id>
+                            <goals>
+                                <goal>repackage</goal> <!-- 将依赖的 Jar 一起打包 -->
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <!-- 添加华为云、阿里云 maven 中央仓库，提升依赖下载速度 -->
+    <repositories>
+        <repository>
+            <id>huaweicloud</id>
+            <name>huawei</name>
+            <url>https://mirrors.huaweicloud.com/repository/maven/</url>
+        </repository>
+        <repository>
+            <id>aliyunmaven</id>
+            <name>aliyun</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+        </repository>
+    </repositories>
 
 </project>
