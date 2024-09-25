@@ -33,6 +33,7 @@
         <jackson.version>2.16.1</jackson.version>
         <mybatis.version>3.5.8</mybatis.version>
         <druid.version>1.2.23</druid.version>
+        <satoken.version>1.38.0</satoken.version>
     </properties>
 
     <dependencyManagement>
@@ -96,6 +97,12 @@
                 <artifactId>druid-spring-boot-3-starter</artifactId>
                 <version>${druid.version}</version>
             </dependency>
+            <!-- Sa-Token 权限认证 -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot3-starter</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -131,6 +138,9 @@
                                 <version>${lombok.version}</version>
                             </path>
                         </annotationProcessorPaths>
+                        <compilerArgs>
+                            <arg>-parameters</arg>
+                        </compilerArgs>
                     </configuration>
                 </plugin>
             </plugins>
