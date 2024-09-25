@@ -8,3 +8,9 @@ spring:
 mybatis:
   # MyBatis xml 配置文件路径
   mapper-locations: classpath:/mapper/**/*.xml
+
+#=================================================================
+# log 日志
+#=================================================================
+logging:
+  config: classpath:logback-spring.xml
