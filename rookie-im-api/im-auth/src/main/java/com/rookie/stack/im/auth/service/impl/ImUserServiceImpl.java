@@ -20,7 +20,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -40,6 +40,9 @@ public class ImUserServiceImpl implements ImUserService {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Resource
+    private TransactionTemplate transactionTemplate;
+
     @Override
     public SaTokenInfo loginOrRegister(UserLoginReq req) {
 
@@ -47,26 +50,7 @@ public class ImUserServiceImpl implements ImUserService {
         Long userId = null;
         switch (loginTypeEnum){
             case VERIFICATION_CODE -> {
-                // 校验入参验证码是否为空
-                if (StringUtils.isBlank(req.getCode())) {
-                    throw new BusinessException(AuthErrorEnum.VERIFICATION_CODE_NOT_BLANK);
-                }
-                // 查询存储在 Redis 中该用户的登录验证码
-                String code = (String) redisTemplate.opsForValue().get(RedisKeyConstants.buildVerificationCodeKey(req.getPhone()));
-                // 判断用户提交的验证码，与 Redis 中的验证码是否一致
-                if (!StringUtils.equals(req.getCode(), code)) {
-                    throw new BusinessException(AuthErrorEnum.VERIFICATION_CODE_ERROR);
-                }
-                ImUser userByPhone = userDao.getUserByPhone(req.getPhone());
-                log.info("==> 用户是否注册, phone: {}, userDO: {}", req.getPhone(), JsonUtil.toJsonString(userByPhone));
-                // 判断是否注册
-                if (Objects.isNull(userByPhone)) {
-                    // 若此用户还没有注册，系统自动注册该用户
-                    userId = doRegister(req.getPhone());
-                } else {
-                    // 已注册，则获取其用户 ID
-                    userId = userByPhone.getId();
-                }
+                userId = doVerificationCodeLogin(req);
                 break;
             }
             case PASSWORD -> {
@@ -82,21 +66,54 @@ public class ImUserServiceImpl implements ImUserService {
         // 获取 Token 令牌
         return StpUtil.getTokenInfo();
     }
-    @Transactional(rollbackFor = Exception.class)
+
+    private Long doVerificationCodeLogin(UserLoginReq req) {
+        Long userId;
+        // 校验入参验证码是否为空
+        if (StringUtils.isBlank(req.getCode())) {
+            throw new BusinessException(AuthErrorEnum.VERIFICATION_CODE_NOT_BLANK);
+        }
+        // 查询存储在 Redis 中该用户的登录验证码
+        String code = (String) redisTemplate.opsForValue().get(RedisKeyConstants.buildVerificationCodeKey(req.getPhone()));
+        // 判断用户提交的验证码，与 Redis 中的验证码是否一致
+        if (!StringUtils.equals(req.getCode(), code)) {
+            throw new BusinessException(AuthErrorEnum.VERIFICATION_CODE_ERROR);
+        }
+        ImUser userByPhone = userDao.getUserByPhone(req.getPhone());
+        log.info("==> 用户是否注册, phone: {}, userDO: {}", req.getPhone(), JsonUtil.toJsonString(userByPhone));
+        // 判断是否注册
+        if (Objects.isNull(userByPhone)) {
+            // 若此用户还没有注册，系统自动注册该用户
+            userId = doRegister(req.getPhone());
+        } else {
+            // 已注册，则获取其用户 ID
+            userId = userByPhone.getId();
+        }
+        return userId;
+    }
+
     public Long doRegister(String phone) {
-        // 生成用户ID
-        Long rookieId = SnowFlakeFactory.getSnowFlakeFromCache().nextId();
-        ImUser build = ImUser.builder()
-                .rookieId(String.valueOf(rookieId))
-                .phone(phone)
-                .nickname(AuthConstants.IM_USER_KEY_PREFIX + rookieId)
-                .status(UserStatusEnum.ENABLE.getValue())
-                .createTime(LocalDateTime.now())
-                .updateTime(LocalDateTime.now())
-                .isDeleted(DeletedEnum.NO.getValue())
-                .build();
-        userDao.insertUser(build);
-        return rookieId;
+        return transactionTemplate.execute(status -> {
+            try {
+                // 生成用户ID
+                Long rookieId = SnowFlakeFactory.getSnowFlakeFromCache().nextId();
+                ImUser build = ImUser.builder()
+                        .rookieId(String.valueOf(rookieId))
+                        .phone(phone)
+                        .nickname(AuthConstants.IM_USER_KEY_PREFIX + rookieId)
+                        .status(UserStatusEnum.ENABLE.getValue())
+                        .createTime(LocalDateTime.now())
+                        .updateTime(LocalDateTime.now())
+                        .isDeleted(DeletedEnum.NO.getValue())
+                        .build();
+                userDao.insertUser(build);
+                return rookieId;
+            } catch (Exception e) {
+                status.setRollbackOnly(); // 标记事务为回滚
+                log.error("==> 系统注册用户异常: ", e);
+                return null;
+            }
+        });
     }
 }
 
