@@ -108,6 +108,12 @@
                 <version>${satoken.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-redis-jackson</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
+
             <!-- 相关工具类 -->
             <dependency>
                 <groupId>com.google.guava</groupId>
