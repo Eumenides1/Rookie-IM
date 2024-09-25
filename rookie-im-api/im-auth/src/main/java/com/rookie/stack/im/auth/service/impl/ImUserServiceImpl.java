@@ -45,7 +45,6 @@ public class ImUserServiceImpl implements ImUserService {
 
     @Override
     public SaTokenInfo loginOrRegister(UserLoginReq req) {
-
         LoginTypeEnum loginTypeEnum = LoginTypeEnum.valueOf(req.getType());
         Long userId = null;
         switch (loginTypeEnum){

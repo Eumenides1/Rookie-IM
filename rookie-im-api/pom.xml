@@ -34,10 +34,11 @@
         <mybatis.version>3.5.8</mybatis.version>
         <druid.version>1.2.23</druid.version>
         <satoken.version>1.38.0</satoken.version>
-
         <guava.version>33.0.0-jre</guava.version>
         <hutool.version>5.8.26</hutool.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
+
+        <nacos-config.version>0.3.0-RC</nacos-config.version>
     </properties>
 
     <dependencyManagement>
@@ -131,6 +132,13 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
+            </dependency>
+
+            <!-- Nacos 配置中心 -->
+            <dependency>
+                <groupId>com.alibaba.boot</groupId>
+                <artifactId>nacos-config-spring-boot-starter</artifactId>
+                <version>${nacos-config.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

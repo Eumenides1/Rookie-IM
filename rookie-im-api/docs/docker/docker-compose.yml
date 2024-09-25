@@ -20,4 +20,38 @@ services:
       - GF_EDITOR_DEFAULT_LOCALE=zh-Hans  # 设置默认语言为简体中文
     depends_on:
       - prometheus  # 确保 Prometheus 在 Grafana 之前启动
+  nacos:
+    image: nacos/nacos-server:latest
+    environment:
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - MYSQL_SERVICE_HOST=mysql
+      - MYSQL_SERVICE_DB_NAME=nacos
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=yourpassword
+      - JVM_XMS=512m
+      - JVM_XMX=1g
+    ports:
+      - "8848:8848"
+    volumes:
+      - ./nacos-data:/home/nacos/data
+      - ./nacos-config:/home/nacos/config
+      - ./nacos-logs:/home/nacos/logs
+    networks:
+      - nacos-net
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=8uhb^YJm
+      - MYSQL_DATABASE=nacos
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      - nacos-net
+
+networks:
+  nacos-net:
+    driver: bridge
 
