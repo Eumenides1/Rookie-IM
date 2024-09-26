@@ -5,6 +5,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.rookie.stack.framework.common.constant.RedisKeyConstants;
 import com.rookie.stack.framework.common.exception.BusinessException;
+import com.rookie.stack.framework.common.exception.CommonErrorEnum;
 import com.rookie.stack.framework.common.utils.JsonUtil;
 import com.rookie.stack.framework.common.utils.id.SnowFlakeFactory;
 import com.rookie.stack.im.auth.common.constant.AuthConstants;
@@ -50,15 +51,11 @@ public class ImUserServiceImpl implements ImUserService {
         switch (loginTypeEnum){
             case VERIFICATION_CODE -> {
                 userId = doVerificationCodeLogin(req);
-                break;
             }
             case PASSWORD -> {
                 // TODO 待补充密码登录逻辑
-                break;
             }
-            default -> {
-                break;
-            }
+            case null -> throw new BusinessException(CommonErrorEnum.PARAM_ERROR);
         }
         // SaToken 登录用户, 入参为用户 ID
         StpUtil.login(userId);

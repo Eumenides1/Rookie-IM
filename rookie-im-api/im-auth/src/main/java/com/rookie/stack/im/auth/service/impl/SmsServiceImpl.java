@@ -40,6 +40,7 @@ public class SmsServiceImpl implements SmsService {
 
         // todo: 调用第三方短信发送服务
 
+
         log.info("==> 手机号: {}, 已发送验证码：【{}】", phone, verificationCode);
 
         // 存储验证码到 redis, 并设置过期时间为 3 分钟
