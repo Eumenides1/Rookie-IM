@@ -140,6 +140,12 @@
                 <artifactId>nacos-config-spring-boot-starter</artifactId>
                 <version>${nacos-config.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-reactor-spring-boot3-starter</artifactId>
+                <version>${satoken.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
