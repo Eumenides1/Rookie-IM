@@ -28,6 +28,10 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
 
         <!-- 解决 Jackson Java 8 新日期 API 的序列化问题 -->
         <dependency>

@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -29,9 +31,20 @@ public class CryptoTests {
         rsa.getPublicKey();
         String publicKeyBase64 = rsa.getPublicKeyBase64();
         System.out.println(publicKeyBase64);
+        // 获取资源目录的路径
+        URL resourceUrl = getClass().getClassLoader().getResource("rsa");
+        String resourcePath;
+
+        if (resourceUrl != null) {
+            resourcePath = resourceUrl.getPath();
+        } else {
+            // 如果资源不存在，创建路径
+            resourcePath = "src/main/resources/rsa";
+            new File(resourcePath).mkdirs();  // 创建 rsa 目录
+        }
         try {
-            Files.writeString(Paths.get("D:\\code\\Rookie-IM\\rookie-im-api\\im-auth\\src\\main\\resources\\rsa", "privateKeyBase64.txt"), privateKeyBase64);
-            Files.writeString(Paths.get("D:\\code\\Rookie-IM\\rookie-im-api\\im-auth\\src\\main\\resources\\rsa", "publicKeyBase64.txt"), publicKeyBase64);
+            Files.writeString(Paths.get(resourcePath, "privateKeyBase64.txt"), privateKeyBase64);
+            Files.writeString(Paths.get(resourcePath, "publicKeyBase64.txt"), publicKeyBase64);
         } catch (Exception e) {
             e.printStackTrace();
         }

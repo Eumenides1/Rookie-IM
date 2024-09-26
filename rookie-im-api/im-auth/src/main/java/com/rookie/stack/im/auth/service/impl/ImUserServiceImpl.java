@@ -2,9 +2,12 @@ package com.rookie.stack.im.auth.service.impl;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.crypto.asymmetric.KeyType;
+import cn.hutool.crypto.asymmetric.RSA;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.rookie.stack.framework.common.constant.RedisKeyConstants;
 import com.rookie.stack.framework.common.exception.BusinessException;
+import com.rookie.stack.framework.common.utils.AssertUtil;
 import com.rookie.stack.framework.common.utils.JsonUtil;
 import com.rookie.stack.framework.common.utils.id.SnowFlakeFactory;
 import com.rookie.stack.im.auth.common.constant.AuthConstants;
@@ -13,11 +16,13 @@ import com.rookie.stack.im.auth.domain.entity.ImUser;
 import com.rookie.stack.im.auth.domain.enums.DeletedEnum;
 import com.rookie.stack.im.auth.domain.enums.LoginTypeEnum;
 import com.rookie.stack.im.auth.domain.enums.UserStatusEnum;
+import com.rookie.stack.im.auth.domain.model.req.UpdatePasswordReq;
 import com.rookie.stack.im.auth.domain.model.req.UserLoginReq;
 import com.rookie.stack.im.auth.exception.AuthErrorEnum;
 import com.rookie.stack.im.auth.filter.LoginUserContextHolder;
 import com.rookie.stack.im.auth.service.ImUserService;
 import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -44,6 +49,9 @@ public class ImUserServiceImpl implements ImUserService {
     @Resource
     private TransactionTemplate transactionTemplate;
 
+    @Resource
+    private RSA rsa;
+
     @Override
     public SaTokenInfo loginOrRegister(UserLoginReq req) {
         LoginTypeEnum loginTypeEnum = LoginTypeEnum.valueOf(req.getType());
@@ -68,6 +76,22 @@ public class ImUserServiceImpl implements ImUserService {
         log.info("==> 用户退出登录, userId: {}", userId);
         StpUtil.logout(userId);
         return userId;
+    }
+
+    @SneakyThrows
+    @Override
+    public void updatePassword(UpdatePasswordReq req) {
+        // 获取当前请求对应的用户 ID
+        Long userId = LoginUserContextHolder.getUserId();
+        ImUser user = userDao.getUserByRookieId(userId);
+        AssertUtil.isNotEmpty(user, "该用户状态异常，请确认");
+        String password = rsa.encryptBase64(req.getNewPassword(), KeyType.PublicKey);
+        user = ImUser.builder()
+                .id(user.getId())
+                .password(password)
+                .updateTime(LocalDateTime.now())
+                .build();
+        userDao.updateByPrimaryKey(user);
     }
 
     private Long doVerificationCodeLogin(UserLoginReq req) {

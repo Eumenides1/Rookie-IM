@@ -17,6 +17,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UpdatePasswordReq {
+
     @NotBlank(message = "新密码不能为空")
     private String newPassword;
+
+    @NotBlank(message = "确认密码不能为空")
+    private String retryPassword;
 }

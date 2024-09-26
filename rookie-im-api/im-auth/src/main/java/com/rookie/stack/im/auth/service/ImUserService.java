@@ -1,6 +1,7 @@
 package com.rookie.stack.im.auth.service;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
+import com.rookie.stack.im.auth.domain.model.req.UpdatePasswordReq;
 import com.rookie.stack.im.auth.domain.model.req.UserLoginReq;
 
 /**
@@ -13,5 +14,7 @@ public interface ImUserService  {
     SaTokenInfo loginOrRegister(UserLoginReq req);
 
     Long logout();
+
+    void updatePassword(UpdatePasswordReq req);
 
 }

@@ -2,6 +2,7 @@ package com.rookie.stack.im.auth.controller;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import com.rookie.stack.framework.common.domain.response.ApiResult;
+import com.rookie.stack.im.auth.domain.model.req.UpdatePasswordReq;
 import com.rookie.stack.im.auth.domain.model.req.UserLoginReq;
 import com.rookie.stack.im.auth.service.ImUserService;
 import jakarta.annotation.Resource;
@@ -28,6 +29,11 @@ public class AuthController {
     public ApiResult<String> loginAndRegister(@Validated @RequestBody UserLoginReq userLoginReq) {
         SaTokenInfo saTokenInfo = imUserService.loginOrRegister(userLoginReq);
         return ApiResult.success(saTokenInfo.tokenValue);
+    }
+    @PostMapping("/updatePassword")
+    public ApiResult<?> updatePassword(@Validated @RequestBody UpdatePasswordReq req){
+        imUserService.updatePassword(req);
+        return ApiResult.success();
     }
 
     @PostMapping("/logout")
