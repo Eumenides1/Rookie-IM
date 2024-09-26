@@ -5,9 +5,11 @@ import com.rookie.stack.framework.common.domain.response.ApiResult;
 import com.rookie.stack.im.auth.domain.model.req.UserLoginReq;
 import com.rookie.stack.im.auth.service.ImUserService;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Created by liujiapeng
  */
 @RestController
+@Slf4j
 public class AuthController {
 
     @Resource
@@ -29,7 +32,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ApiResult<?> logout() {
+    public ApiResult<?> logout(@RequestHeader("userId") String userId) {
+        log.info("==> 网关透传过来的用户 ID: {}", userId);
         // todo 账号退出登录逻辑待实现
         return ApiResult.success();
     }

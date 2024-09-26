@@ -1,6 +1,7 @@
 package com.rookie.stack.im.gateway.exception;
 
-import cn.dev33.satoken.exception.SaTokenException;
+import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotPermissionException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rookie.stack.framework.common.domain.response.ApiResult;
 import com.rookie.stack.im.gateway.enums.GatewayErrorEnum;
@@ -36,13 +37,17 @@ public class GatewayExceptionHandler implements ErrorWebExceptionHandler {
         log.error("==> 全局异常捕获: ", ex);
         ApiResult<?> result;
         // 根据捕获的异常类型，设置不同的响应状态码和响应消息
-        if (ex instanceof SaTokenException) { // Sa-Token 异常
+        if (ex instanceof NotLoginException) { // 未登录异常
+            // 设置 401 状态码
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            // 构建响应结果
+            result = ApiResult.fail(GatewayErrorEnum.UNAUTHORIZED.getErrorCode(), ex.getMessage());
+        } else if (ex instanceof NotPermissionException) { // 无权限异常
             // 权限认证失败时，设置 401 状态码
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             // 构建响应结果
-            result = ApiResult.fail(GatewayErrorEnum.NO_TOKEN);
-        } else {
-            // 其他异常，则统一提示 “系统繁忙” 错误
+            result = ApiResult.fail(GatewayErrorEnum.UNAUTHORIZED.getErrorCode(), GatewayErrorEnum.UNAUTHORIZED.getErrorMsg());
+        } else { // 其他异常，则统一提示 “系统繁忙” 错误
             result = ApiResult.fail(GatewayErrorEnum.SYSTEM_ERROR);
         }
 
