@@ -18,7 +18,6 @@ public class TestController {
     @Value(value = "${rate-limit.api.limit}")
     private Integer limit;
 
-
     @GetMapping("/test")
     public String test() {
         return "当前限流阈值为: " + limit;
