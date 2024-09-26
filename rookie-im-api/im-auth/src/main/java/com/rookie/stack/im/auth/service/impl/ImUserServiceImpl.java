@@ -95,7 +95,7 @@ public class ImUserServiceImpl implements ImUserService {
             userId = doRegister(req.getPhone());
         } else {
             // 已注册，则获取其用户 ID
-            userId = userByPhone.getId();
+            userId = Long.valueOf(userByPhone.getRookieId());
         }
         return userId;
     }
