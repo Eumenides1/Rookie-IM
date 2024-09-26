@@ -26,8 +26,8 @@ public class SaTokenConfigure {
             .setAuth(obj -> {
                 // 登录校验
                 SaRouter.match("/**") // 拦截所有路由
-                        .notMatch("/auth/loginOrRegister") // 排除登录接口
-                        .notMatch("/auth/sms/sendVerifyCode") // 排除验证码发送接口
+                        .notMatch("/auth/api/v1/loginOrRegister") // 排除登录接口
+                        .notMatch("/auth/api/v1/sms/sendVerifyCode") // 排除验证码发送接口
                         .check(r -> StpUtil.checkLogin()) // 校验是否登录
                 ;
             })

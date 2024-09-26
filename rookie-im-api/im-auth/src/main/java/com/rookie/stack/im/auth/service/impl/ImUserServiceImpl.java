@@ -15,6 +15,7 @@ import com.rookie.stack.im.auth.domain.enums.LoginTypeEnum;
 import com.rookie.stack.im.auth.domain.enums.UserStatusEnum;
 import com.rookie.stack.im.auth.domain.model.req.UserLoginReq;
 import com.rookie.stack.im.auth.exception.AuthErrorEnum;
+import com.rookie.stack.im.auth.filter.LoginUserContextHolder;
 import com.rookie.stack.im.auth.service.ImUserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +65,14 @@ public class ImUserServiceImpl implements ImUserService {
         StpUtil.login(userId);
         // 获取 Token 令牌
         return StpUtil.getTokenInfo();
+    }
+
+    @Override
+    public Long logout() {
+        Long userId = LoginUserContextHolder.getUserId();
+        log.info("==> 用户退出登录, userId: {}", userId);
+        StpUtil.logout(userId);
+        return userId;
     }
 
     private Long doVerificationCodeLogin(UserLoginReq req) {

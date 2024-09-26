@@ -111,6 +111,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.rookie.stack</groupId>
             <artifactId>rookie-im-common</artifactId>
             <version>1.0-SNAPSHOT</version>

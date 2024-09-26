@@ -12,4 +12,6 @@ public interface ImUserService  {
 
     SaTokenInfo loginOrRegister(UserLoginReq req);
 
+    Long logout();
+
 }
