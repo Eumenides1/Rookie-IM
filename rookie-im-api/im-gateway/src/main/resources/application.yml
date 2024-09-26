@@ -1,0 +1,12 @@
+server:
+  port: 8000 # 指定启动端口
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: auth
+          uri: http://localhost:8080
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1
