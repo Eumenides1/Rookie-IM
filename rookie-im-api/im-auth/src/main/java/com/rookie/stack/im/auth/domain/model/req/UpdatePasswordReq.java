@@ -1,5 +1,6 @@
 package com.rookie.stack.im.auth.domain.model.req;
 
+import com.rookie.stack.im.auth.common.validate.PasswordsMatch;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@PasswordsMatch
 public class UpdatePasswordReq {
 
     @NotBlank(message = "新密码不能为空")
