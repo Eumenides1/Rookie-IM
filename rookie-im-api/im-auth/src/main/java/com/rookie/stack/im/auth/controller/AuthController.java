@@ -5,10 +5,10 @@ import com.rookie.stack.framework.common.domain.response.ApiResult;
 import com.rookie.stack.im.auth.domain.model.req.UserLoginReq;
 import com.rookie.stack.im.auth.service.ImUserService;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Created by liujiapeng
  */
 @RestController
-@RequestMapping("/auth")
+@Slf4j
 public class AuthController {
 
     @Resource
@@ -28,5 +28,11 @@ public class AuthController {
     public ApiResult<String> loginAndRegister(@Validated @RequestBody UserLoginReq userLoginReq) {
         SaTokenInfo saTokenInfo = imUserService.loginOrRegister(userLoginReq);
         return ApiResult.success(saTokenInfo.tokenValue);
+    }
+
+    @PostMapping("/logout")
+    public ApiResult<?> logout() {
+        Long logout = imUserService.logout();
+        return ApiResult.success(logout);
     }
 }

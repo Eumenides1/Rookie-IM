@@ -16,6 +16,7 @@ import com.rookie.stack.im.auth.domain.enums.LoginTypeEnum;
 import com.rookie.stack.im.auth.domain.enums.UserStatusEnum;
 import com.rookie.stack.im.auth.domain.model.req.UserLoginReq;
 import com.rookie.stack.im.auth.exception.AuthErrorEnum;
+import com.rookie.stack.im.auth.filter.LoginUserContextHolder;
 import com.rookie.stack.im.auth.service.ImUserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,14 @@ public class ImUserServiceImpl implements ImUserService {
         return StpUtil.getTokenInfo();
     }
 
+    @Override
+    public Long logout() {
+        Long userId = LoginUserContextHolder.getUserId();
+        log.info("==> 用户退出登录, userId: {}", userId);
+        StpUtil.logout(userId);
+        return userId;
+    }
+
     private Long doVerificationCodeLogin(UserLoginReq req) {
         Long userId;
         // 校验入参验证码是否为空
@@ -83,7 +92,7 @@ public class ImUserServiceImpl implements ImUserService {
             userId = doRegister(req.getPhone());
         } else {
             // 已注册，则获取其用户 ID
-            userId = userByPhone.getId();
+            userId = Long.valueOf(userByPhone.getRookieId());
         }
         return userId;
     }
