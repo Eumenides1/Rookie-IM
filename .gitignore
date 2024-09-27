@@ -32,3 +32,7 @@ temp/
 # 配置文件
 application-test.properties
 application-dev.properties
+
+privateKeyBase64.txt
+publicKeyBase64.txt
+
