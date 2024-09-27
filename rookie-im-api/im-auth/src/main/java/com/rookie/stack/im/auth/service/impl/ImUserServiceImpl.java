@@ -2,8 +2,6 @@ package com.rookie.stack.im.auth.service.impl;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.crypto.asymmetric.KeyType;
-import cn.hutool.crypto.asymmetric.RSA;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.rookie.stack.framework.common.constant.RedisKeyConstants;
 import com.rookie.stack.framework.common.exception.BusinessException;
@@ -25,6 +23,7 @@ import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -50,24 +49,37 @@ public class ImUserServiceImpl implements ImUserService {
     private TransactionTemplate transactionTemplate;
 
     @Resource
-    private RSA rsa;
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public SaTokenInfo loginOrRegister(UserLoginReq req) {
         LoginTypeEnum loginTypeEnum = LoginTypeEnum.valueOf(req.getType());
         Long userId = null;
-        switch (loginTypeEnum){
+        switch (Objects.requireNonNull(loginTypeEnum,"不合法的登录/注册类型")){
             case VERIFICATION_CODE -> {
                 userId = doVerificationCodeLogin(req);
             }
             case PASSWORD -> {
-                // TODO 待补充密码登录逻辑
+                userId = doPasswordLogin(req);
             }
         }
         // SaToken 登录用户, 入参为用户 ID
         StpUtil.login(userId);
         // 获取 Token 令牌
         return StpUtil.getTokenInfo();
+    }
+
+    private Long doPasswordLogin(UserLoginReq req) {
+        Long userId;
+        // 根据手机号获取用户
+        ImUser userByPhone = userDao.getUserByPhone(req.getPhone());
+        AssertUtil.isNotEmpty(userByPhone, "该用户状态异常");
+        // 解密密码与入参密码对比
+        if (!(passwordEncoder.matches(req.getPassword(), userByPhone.getPassword()))) {
+            throw new BusinessException(AuthErrorEnum.PASSWORD_NOT_MATCH);
+        }
+        userId = Long.valueOf(userByPhone.getRookieId());
+        return userId;
     }
 
     @Override
@@ -85,7 +97,7 @@ public class ImUserServiceImpl implements ImUserService {
         Long userId = LoginUserContextHolder.getUserId();
         ImUser user = userDao.getUserByRookieId(userId);
         AssertUtil.isNotEmpty(user, "该用户状态异常，请确认");
-        String password = rsa.encryptBase64(req.getNewPassword(), KeyType.PublicKey);
+        String password = passwordEncoder.encode(req.getNewPassword());
         user = ImUser.builder()
                 .id(user.getId())
                 .password(password)

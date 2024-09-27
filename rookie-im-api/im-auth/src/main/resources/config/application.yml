@@ -1,7 +1,5 @@
 server:
   port: 8080 # 项目启动的端口
-  servlet:
-    context-path: /api/v1
 
 spring:
   profiles:
