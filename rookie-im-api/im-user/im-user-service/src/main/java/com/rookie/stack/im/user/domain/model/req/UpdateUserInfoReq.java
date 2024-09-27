@@ -30,11 +30,6 @@ public class UpdateUserInfoReq {
     private String nickname;
 
     /**
-     * 菜鸟ID
-     */
-    private String rookieId;
-
-    /**
      * 性别
      */
     private Integer sex;

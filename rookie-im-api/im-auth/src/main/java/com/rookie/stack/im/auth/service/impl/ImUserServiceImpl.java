@@ -4,16 +4,16 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.rookie.stack.framework.common.constant.RedisKeyConstants;
+import com.rookie.stack.framework.common.domain.enums.DeletedEnum;
+import com.rookie.stack.framework.common.domain.enums.LoginTypeEnum;
+import com.rookie.stack.framework.common.domain.enums.UserStatusEnum;
 import com.rookie.stack.framework.common.exception.BusinessException;
 import com.rookie.stack.framework.common.utils.AssertUtil;
 import com.rookie.stack.framework.common.utils.JsonUtil;
 import com.rookie.stack.framework.common.utils.id.SnowFlakeFactory;
 import com.rookie.stack.im.auth.common.constant.AuthConstants;
-import com.rookie.stack.im.auth.dao.ImUserDao;
+import com.rookie.stack.im.auth.dao.AuthImUserDao;
 import com.rookie.stack.im.auth.domain.entity.ImUser;
-import com.rookie.stack.im.auth.domain.enums.DeletedEnum;
-import com.rookie.stack.im.auth.domain.enums.LoginTypeEnum;
-import com.rookie.stack.im.auth.domain.enums.UserStatusEnum;
 import com.rookie.stack.im.auth.domain.model.req.UpdatePasswordReq;
 import com.rookie.stack.im.auth.domain.model.req.UserLoginReq;
 import com.rookie.stack.im.auth.exception.AuthErrorEnum;
@@ -40,7 +40,7 @@ import java.util.Objects;
 public class ImUserServiceImpl implements ImUserService {
 
     @Resource
-    private ImUserDao userDao;
+    private AuthImUserDao userDao;
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;

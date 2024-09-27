@@ -1,4 +1,4 @@
-package com.rookie.stack.im.auth.domain.enums;
+package com.rookie.stack.framework.common.domain.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
