@@ -14,6 +14,7 @@
     <modules>
         <module>rookie-im-common</module>
         <module>rookie-im-rookielog-starter</module>
+        <module>rookie-im-user-context</module>
     </modules>
 
     <artifactId>rookie-stack-framework</artifactId>

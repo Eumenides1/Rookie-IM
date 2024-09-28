@@ -2,8 +2,8 @@ package com.rookie.stack.im.auth.dao;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.rookie.stack.framework.common.domain.enums.UserStatusEnum;
 import com.rookie.stack.im.auth.domain.entity.ImUser;
-import com.rookie.stack.im.auth.domain.enums.UserStatusEnum;
 import com.rookie.stack.im.auth.domain.mapper.ImUserMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;

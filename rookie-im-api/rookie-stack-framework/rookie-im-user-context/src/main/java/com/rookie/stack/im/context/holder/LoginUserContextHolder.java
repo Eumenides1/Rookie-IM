@@ -1,4 +1,4 @@
-package com.rookie.stack.im.auth.filter;
+package com.rookie.stack.im.context.holder;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
 import com.rookie.stack.framework.common.constant.GlobalConstants;
@@ -8,12 +8,12 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * @Classname LoginUserContextHolder
- * @Description TODO
- * @Date 2024/9/26 16:07
- * @Created by liujiapeng
+ * @author eumenides
+ * @description 登录用户上下文对象
+ * @date 2024/9/28
  */
 public class LoginUserContextHolder {
+
     // 初始化一个 ThreadLocal 变量
     private static final ThreadLocal<Map<String, Object>> LOGIN_USER_CONTEXT_THREAD_LOCAL
             = TransmittableThreadLocal.withInitial(HashMap::new);
@@ -46,4 +46,5 @@ public class LoginUserContextHolder {
     public static void remove() {
         LOGIN_USER_CONTEXT_THREAD_LOCAL.remove();
     }
+
 }

@@ -1,12 +1,10 @@
 package com.rookie.stack.im.user.service.impl;
 
 import com.rookie.stack.im.user.dao.ImUserDao;
+import com.rookie.stack.im.user.domain.model.req.UpdateUserInfoReq;
 import com.rookie.stack.im.user.service.UserService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.Optional;
 
 /**
  * @Classname UserServiceImpl
@@ -22,10 +20,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void updateUserInfo(Optional<String> nickname,
-                               Optional<String> avatarUrl, Optional<Integer> sex,
-                               Optional<LocalDate> birthday, Optional<String> introduction) {
-
+    public void updateUserInfo(UpdateUserInfoReq req) {
+        // 获取用户 id
 
 
         return;

@@ -1,7 +1,6 @@
 package com.rookie.stack.im.user.service;
 
-import java.time.LocalDate;
-import java.util.Optional;
+import com.rookie.stack.im.user.domain.model.req.UpdateUserInfoReq;
 
 /**
  * @Classname UserService
@@ -14,10 +13,6 @@ public interface UserService {
     /**
      * 更新用户信息接口
      */
-    void updateUserInfo(Optional<String> nickname,
-                        Optional<String> avatarUrl,
-                        Optional<Integer> sex,
-                        Optional<LocalDate> birthday,
-                        Optional<String> introduction);
+    void updateUserInfo(UpdateUserInfoReq updateUserInfoReq);
 
 }

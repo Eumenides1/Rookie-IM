@@ -102,10 +102,13 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
 
+        <!--上下文组件-->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>transmittable-thread-local</artifactId>
+            <groupId>com.rookie.stack</groupId>
+            <artifactId>rookie-im-user-context</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
+
         <!-- 密码加密 -->
         <dependency>
             <groupId>org.springframework.security</groupId>
