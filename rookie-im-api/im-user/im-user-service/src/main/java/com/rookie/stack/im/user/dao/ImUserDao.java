@@ -27,4 +27,15 @@ public class ImUserDao extends ServiceImpl<ImUserMapper, ImUser> {
         return imUserMapper.selectOne(queryWrapper);
     }
 
+    public ImUser getUserByRookieId(Long rookieId){
+        LambdaQueryWrapper<ImUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ImUser::getRookieId, rookieId);
+        queryWrapper.eq(ImUser::getStatus, UserStatusEnum.ENABLE.getValue());
+        return imUserMapper.selectOne(queryWrapper);
+    }
+
+    public void updateByPrimaryKey(ImUser user){
+        imUserMapper.updateById(user);
+    }
+
 }
