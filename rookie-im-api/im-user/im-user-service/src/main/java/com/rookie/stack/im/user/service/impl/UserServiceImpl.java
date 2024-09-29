@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
                 // 生成用户ID
                 Long rookieId = SnowFlakeFactory.getSnowFlakeFromCache().nextId();
                 ImUser build = ImUser.builder()
-                        .rookieId(String.valueOf(rookieId))
+                        .rookieId(rookieId)
                         .phone(req.getPhone())
                         .nickname(AuthConstants.IM_USER_KEY_PREFIX + rookieId)
                         .status(UserStatusEnum.ENABLE.getValue())
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         return GetUserInfoResp.builder().
-                id(Long.valueOf(userByPhone.getRookieId())).
+                id(userByPhone.getRookieId()).
                 password(userByPhone.getPassword()).
                 build();
     }
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
         Long userId = LoginUserContextHolder.getUserId();
         ImUser build = ImUser.builder()
                 .id(req.getUserId())
-                .rookieId(String.valueOf(userId))
+                .rookieId(userId)
                 .password(req.getEncodePassword())
                 .updateTime(LocalDateTime.now())
                 .build();

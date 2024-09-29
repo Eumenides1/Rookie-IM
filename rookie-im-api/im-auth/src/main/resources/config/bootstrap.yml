@@ -8,14 +8,14 @@ spring:
       discovery:
         enabled: true # 启用服务发现
         group: DEFAULT_GROUP # 所属组
-        namespace: 50952f11-b0b2-46e6-ae24-c7ff29795281 # 命名空间
+        namespace: c600194d-6061-4f56-a6ae-a7bee93b2adc        # 命名空间
         server-addr: 127.0.0.1:8848 # 指定 Nacos 配置中心的服务器地址
       config: # Nacos 配置中心
         group: DEFAULT_GROUP # 指定配置数据所属的组
         server-addr: http://127.0.0.1:8848 # 指定 Nacos 配置中心的服务器地址
         prefix: ${spring.application.name}
         file-extension: properties
-        namespace: 50952f11-b0b2-46e6-ae24-c7ff29795281
+        namespace: c600194d-6061-4f56-a6ae-a7bee93b2adc
         refresh-enabled: true
 alarm:
   type: sms

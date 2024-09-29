@@ -28,7 +28,7 @@ public class ImUser implements Serializable {
     /**
      * Rookie生态ID(唯一凭证)，可用于后续系统联动
      */
-    private String rookieId;
+    private Long rookieId;
 
     /**
      * 密码
