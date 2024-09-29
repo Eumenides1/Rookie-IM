@@ -14,6 +14,10 @@ spring:
           uri: http://localhost:8081
           predicates:
             - Path=/user/**
+        - id: friend
+          uri: http://localhost:8082
+          predicates:
+            - Path=/friend/**
   data:
     redis:
       database: 3 # Redis 数据库索引（默认为 0）

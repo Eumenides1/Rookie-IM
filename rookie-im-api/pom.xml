@@ -16,6 +16,7 @@
         <module>rookie-stack-framework</module>
         <module>im-gateway</module>
         <module>im-user</module>
+        <module>im-friend</module>
     </modules>
 
     <properties>
