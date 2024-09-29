@@ -2,30 +2,27 @@ package com.rookie.stack.im.auth.service.impl;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.rookie.stack.framework.common.constant.RedisKeyConstants;
 import com.rookie.stack.framework.common.domain.enums.LoginTypeEnum;
 import com.rookie.stack.framework.common.exception.BusinessException;
 import com.rookie.stack.framework.common.exception.CommonErrorEnum;
 import com.rookie.stack.framework.common.utils.AssertUtil;
 import com.rookie.stack.framework.common.utils.JsonUtil;
-import com.rookie.stack.im.auth.dao.AuthImUserDao;
-import com.rookie.stack.im.auth.domain.entity.ImUser;
 import com.rookie.stack.im.auth.domain.model.req.UpdatePasswordReq;
 import com.rookie.stack.im.auth.domain.model.req.UserLoginReq;
 import com.rookie.stack.im.auth.exception.AuthErrorEnum;
 import com.rookie.stack.im.auth.rpc.UserRpcService;
 import com.rookie.stack.im.auth.service.ImUserService;
 import com.rookie.stack.im.context.holder.LoginUserContextHolder;
-import com.rookie.stack.im.user.model.resp.GetUserByPhoneResp;
+import com.rookie.stack.im.user.model.resp.GetUserInfoResp;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -36,9 +33,6 @@ import java.util.Objects;
 @Service
 @Slf4j
 public class ImUserServiceImpl implements ImUserService {
-
-    @Resource
-    private AuthImUserDao userDao;
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
@@ -70,7 +64,7 @@ public class ImUserServiceImpl implements ImUserService {
     private Long doPasswordLogin(UserLoginReq req) {
         Long userId;
         // 根据手机号获取用户
-        GetUserByPhoneResp userByPhone = userRpcService.getUserByPhone(req.getPhone());
+        GetUserInfoResp userByPhone = userRpcService.getUserByPhone(req.getPhone());
         // 解密密码与入参密码对比
         if (!(passwordEncoder.matches(req.getPassword(), userByPhone.getPassword()))) {
             throw new BusinessException(AuthErrorEnum.PASSWORD_NOT_MATCH);
@@ -92,15 +86,11 @@ public class ImUserServiceImpl implements ImUserService {
     public void updatePassword(UpdatePasswordReq req) {
         // 获取当前请求对应的用户 ID
         Long userId = LoginUserContextHolder.getUserId();
-        ImUser user = userDao.getUserByRookieId(userId);
-        AssertUtil.isNotEmpty(user, "该用户状态异常，请确认");
+        GetUserInfoResp userByRookieId = userRpcService.getUserByRookieId();
+        AssertUtil.isNotEmpty(userByRookieId, "该用户状态异常，请确认");
+
         String password = passwordEncoder.encode(req.getNewPassword());
-        user = ImUser.builder()
-                .id(user.getId())
-                .password(password)
-                .updateTime(LocalDateTime.now())
-                .build();
-        userDao.updateByPrimaryKey(user);
+        userRpcService.updatePassword(userByRookieId.getId(), password);
     }
 
     private Long doVerificationCodeLogin(UserLoginReq req) {
@@ -115,7 +105,7 @@ public class ImUserServiceImpl implements ImUserService {
         if (!StringUtils.equals(req.getCode(), code)) {
             throw new BusinessException(AuthErrorEnum.VERIFICATION_CODE_ERROR);
         }
-        GetUserByPhoneResp userByPhone = userRpcService.getUserByPhone(req.getPhone());
+        GetUserInfoResp userByPhone = userRpcService.getUserByPhone(req.getPhone());
         log.info("==> 用户是否注册, phone: {}, userDO: {}", req.getPhone(), JsonUtil.toJsonString(userByPhone));
         // 判断是否注册
         if (Objects.isNull(userByPhone)) {

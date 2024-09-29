@@ -38,8 +38,8 @@ public class ImUserDao extends ServiceImpl<ImUserMapper, ImUser> {
         imUserMapper.updateById(user);
     }
 
-    public int insertUser(ImUser user) {
-        return imUserMapper.insert(user);
+    public void insertUser(ImUser user) {
+        imUserMapper.insert(user);
     }
 
 }

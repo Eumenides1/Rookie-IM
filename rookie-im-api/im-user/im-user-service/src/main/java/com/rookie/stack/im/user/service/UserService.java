@@ -1,9 +1,10 @@
 package com.rookie.stack.im.user.service;
 
+import com.rookie.stack.im.user.domain.model.req.UpdateUserInfoReq;
 import com.rookie.stack.im.user.model.req.GetUserByPhoneReq;
 import com.rookie.stack.im.user.model.req.RegisterUserReq;
-import com.rookie.stack.im.user.domain.model.req.UpdateUserInfoReq;
-import com.rookie.stack.im.user.model.resp.GetUserByPhoneResp;
+import com.rookie.stack.im.user.model.req.UpdateUserPasswordReq;
+import com.rookie.stack.im.user.model.resp.GetUserInfoResp;
 
 /**
  * @Classname UserService
@@ -20,5 +21,9 @@ public interface UserService {
 
     Long register(RegisterUserReq req);
 
-    GetUserByPhoneResp getUserByPhone(GetUserByPhoneReq req);
+    GetUserInfoResp getUserByPhone(GetUserByPhoneReq req);
+
+    void updatePassword(UpdateUserPasswordReq req);
+
+    GetUserInfoResp getUserByRookieId();
 }

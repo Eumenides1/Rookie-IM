@@ -1,9 +1,9 @@
 package com.rookie.stack.im.auth.alarm.config;
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.rookie.stack.im.auth.alarm.AlarmInterface;
 import com.rookie.stack.im.auth.alarm.impl.MailAlarmHelper;
 import com.rookie.stack.im.auth.alarm.impl.SmsAlarmHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;

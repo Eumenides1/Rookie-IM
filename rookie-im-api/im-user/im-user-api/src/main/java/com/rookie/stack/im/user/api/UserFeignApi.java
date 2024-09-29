@@ -4,7 +4,8 @@ import com.rookie.stack.framework.common.domain.response.ApiResult;
 import com.rookie.stack.im.user.constant.ApiConstants;
 import com.rookie.stack.im.user.model.req.GetUserByPhoneReq;
 import com.rookie.stack.im.user.model.req.RegisterUserReq;
-import com.rookie.stack.im.user.model.resp.GetUserByPhoneResp;
+import com.rookie.stack.im.user.model.req.UpdateUserPasswordReq;
+import com.rookie.stack.im.user.model.resp.GetUserInfoResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +31,12 @@ public interface UserFeignApi {
     ApiResult<Long> registerUser(@RequestBody RegisterUserReq req);
 
     @PostMapping(value = PREFIX + "/getUserByPhone")
-    ApiResult<GetUserByPhoneResp> getUserByPhone(@RequestBody GetUserByPhoneReq req);
+    ApiResult<GetUserInfoResp> getUserByPhone(@RequestBody GetUserByPhoneReq req);
+
+    @PostMapping(value = PREFIX + "/getUserByRookieId")
+    ApiResult<GetUserInfoResp> getUserByRookieId();
+
+    @PostMapping(value = PREFIX + "/updatePassword")
+    ApiResult<?> updatePassword(@RequestBody UpdateUserPasswordReq req);
 
 }

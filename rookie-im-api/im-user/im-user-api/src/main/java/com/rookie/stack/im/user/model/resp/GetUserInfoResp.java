@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GetUserByPhoneResp {
+public class GetUserInfoResp {
     private Long id;
 
     private String password;

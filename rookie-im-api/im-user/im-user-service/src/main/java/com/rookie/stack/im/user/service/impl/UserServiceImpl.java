@@ -14,7 +14,8 @@ import com.rookie.stack.im.user.domain.model.req.UpdateUserInfoReq;
 import com.rookie.stack.im.user.exception.UserParamsErrorEnum;
 import com.rookie.stack.im.user.model.req.GetUserByPhoneReq;
 import com.rookie.stack.im.user.model.req.RegisterUserReq;
-import com.rookie.stack.im.user.model.resp.GetUserByPhoneResp;
+import com.rookie.stack.im.user.model.req.UpdateUserPasswordReq;
+import com.rookie.stack.im.user.model.resp.GetUserInfoResp;
 import com.rookie.stack.im.user.service.UserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -101,15 +102,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUserByPhoneResp getUserByPhone(GetUserByPhoneReq req) {
+    public GetUserInfoResp getUserByPhone(GetUserByPhoneReq req) {
         ImUser userByPhone = imUserDao.getUserByPhone(req.getPhone());
         if (Objects.isNull(userByPhone)) {
             return null;
         }
-        return GetUserByPhoneResp.builder().
+        return GetUserInfoResp.builder().
                 id(Long.valueOf(userByPhone.getRookieId())).
                 password(userByPhone.getPassword()).
                 build();
+    }
+
+    @Override
+    public void updatePassword(UpdateUserPasswordReq req) {
+        // 获取当前请求对应的用户 ID
+        Long userId = LoginUserContextHolder.getUserId();
+        ImUser build = ImUser.builder()
+                .id(req.getUserId())
+                .rookieId(String.valueOf(userId))
+                .password(req.getEncodePassword())
+                .updateTime(LocalDateTime.now())
+                .build();
+        imUserDao.updateByPrimaryKey(build);
+    }
+
+    @Override
+    public GetUserInfoResp getUserByRookieId() {
+        Long userId = LoginUserContextHolder.getUserId();
+        ImUser userByRookieId = imUserDao.getUserByRookieId(userId);
+        return GetUserInfoResp.builder().id(userByRookieId.getId()).password(userByRookieId.getPassword()).build();
     }
 
     private boolean isAllFieldsNull(UpdateUserInfoReq req) {

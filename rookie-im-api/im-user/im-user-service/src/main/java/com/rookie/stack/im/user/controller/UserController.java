@@ -4,7 +4,8 @@ import com.rookie.stack.framework.common.domain.response.ApiResult;
 import com.rookie.stack.im.user.domain.model.req.UpdateUserInfoReq;
 import com.rookie.stack.im.user.model.req.GetUserByPhoneReq;
 import com.rookie.stack.im.user.model.req.RegisterUserReq;
-import com.rookie.stack.im.user.model.resp.GetUserByPhoneResp;
+import com.rookie.stack.im.user.model.req.UpdateUserPasswordReq;
+import com.rookie.stack.im.user.model.resp.GetUserInfoResp;
 import com.rookie.stack.im.user.service.UserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,18 @@ public class UserController {
     }
 
     @PostMapping("/getUserByPhone")
-    public ApiResult<GetUserByPhoneResp> getUserByPhone(@Validated @RequestBody GetUserByPhoneReq req){
+    public ApiResult<GetUserInfoResp> getUserByPhone(@Validated @RequestBody GetUserByPhoneReq req){
         return ApiResult.success(userService.getUserByPhone(req));
+    }
+
+    @PostMapping("/getUserByRookieId")
+    public ApiResult<GetUserInfoResp> getUserByRookieId(){
+        return ApiResult.success(userService.getUserByRookieId());
+    }
+
+    @PostMapping("/updatePassword")
+    public ApiResult<?> updatePassword(@Validated @RequestBody UpdateUserPasswordReq req){
+        userService.updatePassword(req);
+        return ApiResult.success("用户密码更新成功");
     }
 }
