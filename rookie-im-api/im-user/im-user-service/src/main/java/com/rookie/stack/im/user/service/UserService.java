@@ -1,5 +1,6 @@
 package com.rookie.stack.im.user.service;
 
+import com.rookie.stack.im.user.model.req.RegisterUserReq;
 import com.rookie.stack.im.user.domain.model.req.UpdateUserInfoReq;
 
 /**
@@ -15,4 +16,5 @@ public interface UserService {
      */
     void updateUserInfo(UpdateUserInfoReq updateUserInfoReq);
 
+    Long register(RegisterUserReq req);
 }

@@ -8,5 +8,5 @@ spring:
       discovery:
         enabled: true # 启用服务发现
         group: DEFAULT_GROUP # 所属组
-        namespace: c600194d-6061-4f56-a6ae-a7bee93b2adc # 命名空间
+        namespace: ${rookie.im.nacos.namespace} # 命名空间
         server-addr: 127.0.0.1:8848 # 指定 Nacos 配置中心的服务器地址

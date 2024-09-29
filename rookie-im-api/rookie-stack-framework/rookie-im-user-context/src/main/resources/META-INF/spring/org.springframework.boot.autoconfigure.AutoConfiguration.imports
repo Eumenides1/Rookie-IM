@@ -1,1 +1,2 @@
 com.rookie.stack.im.context.config.ContextAutoConfiguration
+com.rookie.stack.im.context.config.FeignContextAutoConfiguration

@@ -11,7 +11,7 @@ spring:
           filters:
             - StripPrefix=1
         - id: user
-          uri: lb://im-user
+          uri: http://localhost:8081
           predicates:
             - Path=/user/**
           filters:

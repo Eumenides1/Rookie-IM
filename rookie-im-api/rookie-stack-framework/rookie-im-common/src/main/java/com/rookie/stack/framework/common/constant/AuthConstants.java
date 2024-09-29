@@ -1,4 +1,4 @@
-package com.rookie.stack.im.auth.common.constant;
+package com.rookie.stack.framework.common.constant;
 
 /**
  * @Classname AuthConstants

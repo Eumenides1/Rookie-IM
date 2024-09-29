@@ -1,8 +1,13 @@
 package com.rookie.stack.im.user.service.impl;
 
 import com.alibaba.nacos.shaded.com.google.common.base.Preconditions;
+import com.rookie.stack.framework.common.constant.AuthConstants;
+import com.rookie.stack.framework.common.domain.enums.DeletedEnum;
+import com.rookie.stack.framework.common.domain.enums.UserStatusEnum;
 import com.rookie.stack.framework.common.utils.AssertUtil;
+import com.rookie.stack.framework.common.utils.id.SnowFlakeFactory;
 import com.rookie.stack.im.context.holder.LoginUserContextHolder;
+import com.rookie.stack.im.user.model.req.RegisterUserReq;
 import com.rookie.stack.im.user.common.utils.ParamUtils;
 import com.rookie.stack.im.user.dao.ImUserDao;
 import com.rookie.stack.im.user.domain.entity.ImUser;
@@ -12,6 +17,7 @@ import com.rookie.stack.im.user.service.UserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -30,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private ImUserDao imUserDao;
+
+    @Resource
+    private TransactionTemplate transactionTemplate;
 
 
     @Override
@@ -59,6 +68,33 @@ public class UserServiceImpl implements UserService {
             userByRookieId.setUpdateTime(LocalDateTime.now());
             imUserDao.updateByPrimaryKey(userByRookieId);
         }
+    }
+
+    @Override
+    public Long register(RegisterUserReq req) {
+        ImUser user = imUserDao.getUserByPhone(req.getPhone());
+        AssertUtil.isEmpty(user, "用户状态异常！");
+        return transactionTemplate.execute(status -> {
+            try {
+                // 生成用户ID
+                Long rookieId = SnowFlakeFactory.getSnowFlakeFromCache().nextId();
+                ImUser build = ImUser.builder()
+                        .rookieId(String.valueOf(rookieId))
+                        .phone(req.getPhone())
+                        .nickname(AuthConstants.IM_USER_KEY_PREFIX + rookieId)
+                        .status(UserStatusEnum.ENABLE.getValue())
+                        .createTime(LocalDateTime.now())
+                        .updateTime(LocalDateTime.now())
+                        .isDeleted(DeletedEnum.NO.getValue())
+                        .build();
+                imUserDao.insertUser(build);
+                return rookieId;
+            } catch (Exception e) {
+                status.setRollbackOnly(); // 标记事务为回滚
+                log.error("==> 系统注册用户异常: ", e);
+                return null;
+            }
+        });
     }
 
     private boolean isAllFieldsNull(UpdateUserInfoReq req) {

@@ -4,19 +4,16 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.rookie.stack.framework.common.constant.RedisKeyConstants;
-import com.rookie.stack.framework.common.domain.enums.DeletedEnum;
 import com.rookie.stack.framework.common.domain.enums.LoginTypeEnum;
-import com.rookie.stack.framework.common.domain.enums.UserStatusEnum;
 import com.rookie.stack.framework.common.exception.BusinessException;
 import com.rookie.stack.framework.common.utils.AssertUtil;
 import com.rookie.stack.framework.common.utils.JsonUtil;
-import com.rookie.stack.framework.common.utils.id.SnowFlakeFactory;
-import com.rookie.stack.im.auth.common.constant.AuthConstants;
 import com.rookie.stack.im.auth.dao.AuthImUserDao;
 import com.rookie.stack.im.auth.domain.entity.ImUser;
 import com.rookie.stack.im.auth.domain.model.req.UpdatePasswordReq;
 import com.rookie.stack.im.auth.domain.model.req.UserLoginReq;
 import com.rookie.stack.im.auth.exception.AuthErrorEnum;
+import com.rookie.stack.im.auth.rpc.UserRpcService;
 import com.rookie.stack.im.auth.service.ImUserService;
 import com.rookie.stack.im.context.holder.LoginUserContextHolder;
 import jakarta.annotation.Resource;
@@ -47,6 +44,9 @@ public class ImUserServiceImpl implements ImUserService {
 
     @Resource
     private TransactionTemplate transactionTemplate;
+
+    @Resource
+    private UserRpcService userRpcService;
 
     @Resource
     private PasswordEncoder passwordEncoder;
@@ -123,7 +123,10 @@ public class ImUserServiceImpl implements ImUserService {
         // 判断是否注册
         if (Objects.isNull(userByPhone)) {
             // 若此用户还没有注册，系统自动注册该用户
-            userId = doRegister(req.getPhone());
+            userId = userRpcService.registerUser(req.getPhone());
+            if (Objects.isNull(userId)) {
+                throw new BusinessException();
+            }
         } else {
             // 已注册，则获取其用户 ID
             userId = Long.valueOf(userByPhone.getRookieId());
@@ -131,29 +134,7 @@ public class ImUserServiceImpl implements ImUserService {
         return userId;
     }
 
-    public Long doRegister(String phone) {
-        return transactionTemplate.execute(status -> {
-            try {
-                // 生成用户ID
-                Long rookieId = SnowFlakeFactory.getSnowFlakeFromCache().nextId();
-                ImUser build = ImUser.builder()
-                        .rookieId(String.valueOf(rookieId))
-                        .phone(phone)
-                        .nickname(AuthConstants.IM_USER_KEY_PREFIX + rookieId)
-                        .status(UserStatusEnum.ENABLE.getValue())
-                        .createTime(LocalDateTime.now())
-                        .updateTime(LocalDateTime.now())
-                        .isDeleted(DeletedEnum.NO.getValue())
-                        .build();
-                userDao.insertUser(build);
-                return rookieId;
-            } catch (Exception e) {
-                status.setRollbackOnly(); // 标记事务为回滚
-                log.error("==> 系统注册用户异常: ", e);
-                return null;
-            }
-        });
-    }
+
 }
 
 
