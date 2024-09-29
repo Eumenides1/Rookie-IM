@@ -7,12 +7,14 @@ import com.rookie.stack.framework.common.domain.enums.UserStatusEnum;
 import com.rookie.stack.framework.common.utils.AssertUtil;
 import com.rookie.stack.framework.common.utils.id.SnowFlakeFactory;
 import com.rookie.stack.im.context.holder.LoginUserContextHolder;
-import com.rookie.stack.im.user.model.req.RegisterUserReq;
 import com.rookie.stack.im.user.common.utils.ParamUtils;
 import com.rookie.stack.im.user.dao.ImUserDao;
 import com.rookie.stack.im.user.domain.entity.ImUser;
 import com.rookie.stack.im.user.domain.model.req.UpdateUserInfoReq;
 import com.rookie.stack.im.user.exception.UserParamsErrorEnum;
+import com.rookie.stack.im.user.model.req.GetUserByPhoneReq;
+import com.rookie.stack.im.user.model.req.RegisterUserReq;
+import com.rookie.stack.im.user.model.resp.GetUserByPhoneResp;
 import com.rookie.stack.im.user.service.UserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -95,6 +98,18 @@ public class UserServiceImpl implements UserService {
                 return null;
             }
         });
+    }
+
+    @Override
+    public GetUserByPhoneResp getUserByPhone(GetUserByPhoneReq req) {
+        ImUser userByPhone = imUserDao.getUserByPhone(req.getPhone());
+        if (Objects.isNull(userByPhone)) {
+            return null;
+        }
+        return GetUserByPhoneResp.builder().
+                id(Long.valueOf(userByPhone.getRookieId())).
+                password(userByPhone.getPassword()).
+                build();
     }
 
     private boolean isAllFieldsNull(UpdateUserInfoReq req) {

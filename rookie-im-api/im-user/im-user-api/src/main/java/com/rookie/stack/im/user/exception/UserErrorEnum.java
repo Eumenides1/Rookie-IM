@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum UserErrorEnum implements ErrorEnum {
-    USER_SYSTEM_ERROR(-4000, "出错啦，请稍后重试！")
+    USER_SYSTEM_ERROR(-4000, "出错啦，请稍后重试！"),
+    USER_NOT_FOUND(-4001,"该用户不存在")
     ;
     private final Integer code;
     private final String msg;

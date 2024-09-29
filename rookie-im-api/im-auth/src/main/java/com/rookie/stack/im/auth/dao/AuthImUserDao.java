@@ -20,13 +20,6 @@ public class AuthImUserDao extends ServiceImpl<ImUserMapper, ImUser> {
     @Resource
     private ImUserMapper imUserMapper;
 
-    public ImUser getUserByPhone(String phone) {
-        LambdaQueryWrapper<ImUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ImUser::getPhone, phone);
-        queryWrapper.eq(ImUser::getStatus, UserStatusEnum.ENABLE.getValue());
-        return imUserMapper.selectOne(queryWrapper);
-    }
-
 
     public ImUser getUserByRookieId(Long rookieId){
         LambdaQueryWrapper<ImUser> queryWrapper = new LambdaQueryWrapper<>();
@@ -35,9 +28,6 @@ public class AuthImUserDao extends ServiceImpl<ImUserMapper, ImUser> {
         return imUserMapper.selectOne(queryWrapper);
     }
 
-    public int insertUser(ImUser user) {
-        return imUserMapper.insert(user);
-    }
 
     public void updateByPrimaryKey(ImUser user){
         imUserMapper.updateById(user);

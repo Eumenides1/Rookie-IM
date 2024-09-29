@@ -1,7 +1,9 @@
 package com.rookie.stack.im.user.service;
 
+import com.rookie.stack.im.user.model.req.GetUserByPhoneReq;
 import com.rookie.stack.im.user.model.req.RegisterUserReq;
 import com.rookie.stack.im.user.domain.model.req.UpdateUserInfoReq;
+import com.rookie.stack.im.user.model.resp.GetUserByPhoneResp;
 
 /**
  * @Classname UserService
@@ -17,4 +19,6 @@ public interface UserService {
     void updateUserInfo(UpdateUserInfoReq updateUserInfoReq);
 
     Long register(RegisterUserReq req);
+
+    GetUserByPhoneResp getUserByPhone(GetUserByPhoneReq req);
 }

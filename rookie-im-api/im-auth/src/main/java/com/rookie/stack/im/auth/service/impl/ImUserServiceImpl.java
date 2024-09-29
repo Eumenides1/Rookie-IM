@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.rookie.stack.framework.common.constant.RedisKeyConstants;
 import com.rookie.stack.framework.common.domain.enums.LoginTypeEnum;
 import com.rookie.stack.framework.common.exception.BusinessException;
+import com.rookie.stack.framework.common.exception.CommonErrorEnum;
 import com.rookie.stack.framework.common.utils.AssertUtil;
 import com.rookie.stack.framework.common.utils.JsonUtil;
 import com.rookie.stack.im.auth.dao.AuthImUserDao;
@@ -16,13 +17,13 @@ import com.rookie.stack.im.auth.exception.AuthErrorEnum;
 import com.rookie.stack.im.auth.rpc.UserRpcService;
 import com.rookie.stack.im.auth.service.ImUserService;
 import com.rookie.stack.im.context.holder.LoginUserContextHolder;
+import com.rookie.stack.im.user.model.resp.GetUserByPhoneResp;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -41,9 +42,6 @@ public class ImUserServiceImpl implements ImUserService {
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
-
-    @Resource
-    private TransactionTemplate transactionTemplate;
 
     @Resource
     private UserRpcService userRpcService;
@@ -72,13 +70,12 @@ public class ImUserServiceImpl implements ImUserService {
     private Long doPasswordLogin(UserLoginReq req) {
         Long userId;
         // 根据手机号获取用户
-        ImUser userByPhone = userDao.getUserByPhone(req.getPhone());
-        AssertUtil.isNotEmpty(userByPhone, "该用户状态异常");
+        GetUserByPhoneResp userByPhone = userRpcService.getUserByPhone(req.getPhone());
         // 解密密码与入参密码对比
         if (!(passwordEncoder.matches(req.getPassword(), userByPhone.getPassword()))) {
             throw new BusinessException(AuthErrorEnum.PASSWORD_NOT_MATCH);
         }
-        userId = Long.valueOf(userByPhone.getRookieId());
+        userId = userByPhone.getId();
         return userId;
     }
 
@@ -118,18 +115,18 @@ public class ImUserServiceImpl implements ImUserService {
         if (!StringUtils.equals(req.getCode(), code)) {
             throw new BusinessException(AuthErrorEnum.VERIFICATION_CODE_ERROR);
         }
-        ImUser userByPhone = userDao.getUserByPhone(req.getPhone());
+        GetUserByPhoneResp userByPhone = userRpcService.getUserByPhone(req.getPhone());
         log.info("==> 用户是否注册, phone: {}, userDO: {}", req.getPhone(), JsonUtil.toJsonString(userByPhone));
         // 判断是否注册
         if (Objects.isNull(userByPhone)) {
             // 若此用户还没有注册，系统自动注册该用户
             userId = userRpcService.registerUser(req.getPhone());
             if (Objects.isNull(userId)) {
-                throw new BusinessException();
+                throw new BusinessException(CommonErrorEnum.SYSTEM_ERROR);
             }
         } else {
             // 已注册，则获取其用户 ID
-            userId = Long.valueOf(userByPhone.getRookieId());
+            userId = userByPhone.getId();
         }
         return userId;
     }

@@ -14,8 +14,6 @@ spring:
           uri: http://localhost:8081
           predicates:
             - Path=/user/**
-          filters:
-            - StripPrefix=1
   data:
     redis:
       database: 3 # Redis 数据库索引（默认为 0）
