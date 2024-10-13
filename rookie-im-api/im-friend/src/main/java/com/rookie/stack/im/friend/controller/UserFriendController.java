@@ -7,6 +7,7 @@ import com.rookie.stack.im.friend.domain.model.req.FriendApplyReq;
 import com.rookie.stack.im.friend.domain.model.req.FriendCheckReq;
 import com.rookie.stack.im.friend.domain.model.resp.FriendApplyResp;
 import com.rookie.stack.im.friend.domain.model.resp.FriendCheckResp;
+import com.rookie.stack.im.friend.domain.model.resp.FriendUnreadResp;
 import com.rookie.stack.im.friend.service.FriendService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -31,10 +32,12 @@ public class UserFriendController {
         friendService.apply(req);
         return ApiResult.success();
     }
-
     @GetMapping("/apply/page")
     public ApiResult<PageBaseResp<FriendApplyResp>> page(@Valid PageBaseReq request) {
         return ApiResult.success(friendService.pageApplyFriend(request));
     }
-
+    @GetMapping("/apply/unread")
+    public ApiResult<FriendUnreadResp> unread() {
+        return ApiResult.success(friendService.unread());
+    }
 }

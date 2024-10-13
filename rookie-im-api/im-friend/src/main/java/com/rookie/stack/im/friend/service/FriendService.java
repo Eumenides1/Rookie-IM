@@ -6,6 +6,7 @@ import com.rookie.stack.im.friend.domain.model.req.FriendApplyReq;
 import com.rookie.stack.im.friend.domain.model.req.FriendCheckReq;
 import com.rookie.stack.im.friend.domain.model.resp.FriendApplyResp;
 import com.rookie.stack.im.friend.domain.model.resp.FriendCheckResp;
+import com.rookie.stack.im.friend.domain.model.resp.FriendUnreadResp;
 
 /**
  * @Classname FriendService
@@ -29,4 +30,11 @@ public interface FriendService {
     void apply(FriendApplyReq req);
 
     PageBaseResp<FriendApplyResp> pageApplyFriend(PageBaseReq req);
+
+    /**
+     * 申请未读数
+     *
+     * @return {@link FriendUnreadResp}
+     */
+    FriendUnreadResp unread();
 }

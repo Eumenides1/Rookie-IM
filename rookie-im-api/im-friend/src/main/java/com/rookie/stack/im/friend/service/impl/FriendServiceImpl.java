@@ -16,6 +16,7 @@ import com.rookie.stack.im.friend.domain.model.req.FriendApplyReq;
 import com.rookie.stack.im.friend.domain.model.req.FriendCheckReq;
 import com.rookie.stack.im.friend.domain.model.resp.FriendApplyResp;
 import com.rookie.stack.im.friend.domain.model.resp.FriendCheckResp;
+import com.rookie.stack.im.friend.domain.model.resp.FriendUnreadResp;
 import com.rookie.stack.im.friend.exception.FriendErrorEnum;
 import com.rookie.stack.im.friend.service.FriendService;
 import com.rookie.stack.im.friend.service.adapter.FriendAdapter;
@@ -86,6 +87,7 @@ public class FriendServiceImpl implements FriendService {
         // 1. 获取用户的 id
         Long userId = LoginUserContextHolder.getUserId();
         IPage<UserApply> userApplyIPage = userApplyDao.friendApplyPage(userId, req.plusPage());
+        // TODO MyBatis 分页查询 total bug
         if (CollectionUtil.isEmpty(userApplyIPage.getRecords())) {
             return PageBaseResp.empty();
         }
@@ -93,6 +95,14 @@ public class FriendServiceImpl implements FriendService {
         readApples(userId, userApplyIPage);
         return PageBaseResp.init(userApplyIPage, FriendAdapter.buildFriendApplyList(userApplyIPage.getRecords()));
     }
+
+    @Override
+    public FriendUnreadResp unread() {
+        Long userId = LoginUserContextHolder.getUserId();
+        Integer unReadCount = userApplyDao.getUnReadCount(userId);
+        return new FriendUnreadResp(unReadCount);
+    }
+
     private void readApples(Long uid, IPage<UserApply> userApplyIPage) {
         List<Long> applyIds = userApplyIPage.getRecords()
                 .stream().map(UserApply::getId)
