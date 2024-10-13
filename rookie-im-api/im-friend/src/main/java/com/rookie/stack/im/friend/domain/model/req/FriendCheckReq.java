@@ -1,6 +1,6 @@
 package com.rookie.stack.im.friend.domain.model.req;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FriendCheckReq {
 
-    @NotEmpty
+    @NotNull(message = "好友 ID 不能为空")
     private Long friendId;
 
 }

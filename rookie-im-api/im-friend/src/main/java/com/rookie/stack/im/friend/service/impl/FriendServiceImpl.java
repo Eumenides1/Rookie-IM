@@ -8,12 +8,14 @@ import com.rookie.stack.im.friend.domain.model.req.FriendCheckReq;
 import com.rookie.stack.im.friend.domain.model.resp.FriendCheckResp;
 import com.rookie.stack.im.friend.service.FriendService;
 import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
 
 /**
  * @author eumenides
  * @description
  * @date 2024/10/13
  */
+@Service
 public class FriendServiceImpl implements FriendService {
     @Resource
     private UserFriendDao userFriendDao;
