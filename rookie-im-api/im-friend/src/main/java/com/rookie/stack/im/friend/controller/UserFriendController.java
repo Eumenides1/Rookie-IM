@@ -1,7 +1,11 @@
 package com.rookie.stack.im.friend.controller;
+
+import com.rookie.stack.framework.common.domain.model.req.PageBaseReq;
+import com.rookie.stack.framework.common.domain.model.resp.PageBaseResp;
 import com.rookie.stack.framework.common.domain.response.ApiResult;
 import com.rookie.stack.im.friend.domain.model.req.FriendApplyReq;
 import com.rookie.stack.im.friend.domain.model.req.FriendCheckReq;
+import com.rookie.stack.im.friend.domain.model.resp.FriendApplyResp;
 import com.rookie.stack.im.friend.domain.model.resp.FriendCheckResp;
 import com.rookie.stack.im.friend.service.FriendService;
 import jakarta.annotation.Resource;
@@ -27,4 +31,10 @@ public class UserFriendController {
         friendService.apply(req);
         return ApiResult.success();
     }
+
+    @GetMapping("/apply/page")
+    public ApiResult<PageBaseResp<FriendApplyResp>> page(@Valid PageBaseReq request) {
+        return ApiResult.success(friendService.pageApplyFriend(request));
+    }
+
 }
