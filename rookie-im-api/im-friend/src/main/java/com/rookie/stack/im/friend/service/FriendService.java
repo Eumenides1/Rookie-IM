@@ -1,5 +1,6 @@
 package com.rookie.stack.im.friend.service;
 
+import com.rookie.stack.im.friend.domain.model.req.FriendApplyReq;
 import com.rookie.stack.im.friend.domain.model.req.FriendCheckReq;
 import com.rookie.stack.im.friend.domain.model.resp.FriendCheckResp;
 
@@ -18,4 +19,6 @@ public interface FriendService {
      * @return {@link FriendCheckResp}
      */
     FriendCheckResp check(FriendCheckReq request);
+
+    void apply(FriendApplyReq req);
 }
