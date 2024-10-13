@@ -13,4 +13,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserFriendDao extends ServiceImpl<UserFriendMapper, UserFriend> {
+
+    public UserFriend getByFriend(Long uid, Long targetUid) {
+        return lambdaQuery().eq(UserFriend::getUid, uid)
+                .eq(UserFriend::getFriendUid, targetUid)
+                .one();
+    }
+
 }
