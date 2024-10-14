@@ -4,6 +4,7 @@ import com.rookie.stack.framework.common.domain.model.req.PageBaseReq;
 import com.rookie.stack.framework.common.domain.model.resp.PageBaseResp;
 import com.rookie.stack.framework.common.domain.response.ApiResult;
 import com.rookie.stack.im.friend.domain.model.req.FriendApplyReq;
+import com.rookie.stack.im.friend.domain.model.req.FriendApproveReq;
 import com.rookie.stack.im.friend.domain.model.req.FriendCheckReq;
 import com.rookie.stack.im.friend.domain.model.resp.FriendApplyResp;
 import com.rookie.stack.im.friend.domain.model.resp.FriendCheckResp;
@@ -39,5 +40,11 @@ public class UserFriendController {
     @GetMapping("/apply/unread")
     public ApiResult<FriendUnreadResp> unread() {
         return ApiResult.success(friendService.unread());
+    }
+
+    @PutMapping("/apply")
+    public ApiResult<Void> applyApprove(@Valid @RequestBody FriendApproveReq request) {
+        friendService.applyApprove(request);
+        return ApiResult.success();
     }
 }

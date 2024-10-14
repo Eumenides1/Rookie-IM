@@ -3,6 +3,7 @@ package com.rookie.stack.im.friend.service;
 import com.rookie.stack.framework.common.domain.model.req.PageBaseReq;
 import com.rookie.stack.framework.common.domain.model.resp.PageBaseResp;
 import com.rookie.stack.im.friend.domain.model.req.FriendApplyReq;
+import com.rookie.stack.im.friend.domain.model.req.FriendApproveReq;
 import com.rookie.stack.im.friend.domain.model.req.FriendCheckReq;
 import com.rookie.stack.im.friend.domain.model.resp.FriendApplyResp;
 import com.rookie.stack.im.friend.domain.model.resp.FriendCheckResp;
@@ -24,11 +25,16 @@ public interface FriendService {
     FriendCheckResp check(FriendCheckReq request);
 
     /**
-     *
+     * 好友申请
      * @param req
      */
     void apply(FriendApplyReq req);
 
+    /**
+     * 分页获取好友申请列表
+     * @param req
+     * @return
+     */
     PageBaseResp<FriendApplyResp> pageApplyFriend(PageBaseReq req);
 
     /**
@@ -37,4 +43,6 @@ public interface FriendService {
      * @return {@link FriendUnreadResp}
      */
     FriendUnreadResp unread();
+
+    void applyApprove(FriendApproveReq request);
 }

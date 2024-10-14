@@ -57,6 +57,17 @@ public class AssertUtil {
             throwException(errorEnum, args);
         }
     }
+    public static void equal(Object o1, Object o2, String msg) {
+        if (!ObjectUtil.equal(o1, o2)) {
+            throwException(msg);
+        }
+    }
+
+    public static void notEqual(Object o1, Object o2, String msg) {
+        if (ObjectUtil.equal(o1, o2)) {
+            throwException(msg);
+        }
+    }
     private static void throwException(String msg) {
         throwException(null, msg);
 

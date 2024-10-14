@@ -2,6 +2,7 @@ package com.rookie.stack.im.friend.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.nacos.shaded.com.google.common.collect.Lists;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.rookie.stack.framework.common.domain.model.req.PageBaseReq;
 import com.rookie.stack.framework.common.domain.model.resp.PageBaseResp;
@@ -13,6 +14,7 @@ import com.rookie.stack.im.friend.dao.UserFriendDao;
 import com.rookie.stack.im.friend.domain.entity.UserApply;
 import com.rookie.stack.im.friend.domain.entity.UserFriend;
 import com.rookie.stack.im.friend.domain.model.req.FriendApplyReq;
+import com.rookie.stack.im.friend.domain.model.req.FriendApproveReq;
 import com.rookie.stack.im.friend.domain.model.req.FriendCheckReq;
 import com.rookie.stack.im.friend.domain.model.resp.FriendApplyResp;
 import com.rookie.stack.im.friend.domain.model.resp.FriendCheckResp;
@@ -22,11 +24,15 @@ import com.rookie.stack.im.friend.service.FriendService;
 import com.rookie.stack.im.friend.service.adapter.FriendAdapter;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.rookie.stack.im.friend.domain.enums.ApplyStatusEnum.WAIT_APPROVAL;
 
 /**
  * @author eumenides
@@ -74,7 +80,13 @@ public class FriendServiceImpl implements FriendService {
         //是否有待审批的申请记录(别人请求自己的)
         UserApply friendApproving = userApplyDao.getFriendApproving(req.getTargetUid(), userId);
         if (Objects.nonNull(friendApproving)) {
-            // TODO 如果有别人请求自己的申请，那我再去添加对方 = 同意对方的好友请求
+            //  Spring AOP 的 AopContext.currentProxy() 来获取当前的代理对象，
+            //  然后通过代理对象调用 applyApprove 方法
+            // 某个方法调用在当前类中能够使用代理对象（如事务生效），就会用到这种方式。
+            // 如果直接调用类中的方法（比如 this.applyApprove()），
+            // Spring 的 AOP 机制是不会对这种内部调用生效的，
+            // 所以需要通过 AopContext.currentProxy() 获取代理对象再进行方法调用。
+            ((FriendService) AopContext.currentProxy()).applyApprove(new FriendApproveReq(friendApproving.getId()));
             return;
         }
         UserApply insert = FriendAdapter.buildFriendApply(userId, req);
@@ -103,10 +115,37 @@ public class FriendServiceImpl implements FriendService {
         return new FriendUnreadResp(unReadCount);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void applyApprove(FriendApproveReq request) {
+        Long userId = LoginUserContextHolder.getUserId();
+        UserApply userApply = userApplyDao.getById(request.getApplyId());
+        AssertUtil.isNotEmpty(userApply, "不存在申请记录");
+        // 如果记录中被添加者 id 和用户 id 不符，为非法申请
+        AssertUtil.equal(userApply.getTargetId(), userId, "不存在申请记录");
+        AssertUtil.equal(userApply.getStatus(), WAIT_APPROVAL.getCode(), "已同意好友申请");
+        //同意申请
+        userApplyDao.agree(request.getApplyId());
+        //创建双方好友关系
+        createFriend(userId, userApply.getUid());
+        // TODO 创建一个聊天房间
+        // TODO 发送好友添加成功消息推送
+    }
+
     private void readApples(Long uid, IPage<UserApply> userApplyIPage) {
         List<Long> applyIds = userApplyIPage.getRecords()
                 .stream().map(UserApply::getId)
                 .collect(Collectors.toList());
         userApplyDao.readApples(uid, applyIds);
+    }
+
+    private void createFriend(Long uid, Long targetUid) {
+        UserFriend userFriend1 = new UserFriend();
+        userFriend1.setUid(uid);
+        userFriend1.setFriendUid(targetUid);
+        UserFriend userFriend2 = new UserFriend();
+        userFriend2.setUid(targetUid);
+        userFriend2.setFriendUid(uid);
+        userFriendDao.saveBatch(Lists.newArrayList(userFriend1, userFriend2));
     }
 }

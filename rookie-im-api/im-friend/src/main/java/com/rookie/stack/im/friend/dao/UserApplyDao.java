@@ -13,6 +13,7 @@ import java.util.List;
 
 import static com.rookie.stack.im.friend.domain.enums.ApplyReadStatusEnum.READ;
 import static com.rookie.stack.im.friend.domain.enums.ApplyReadStatusEnum.UNREAD;
+import static com.rookie.stack.im.friend.domain.enums.ApplyStatusEnum.AGREE;
 
 /**
  * @Classname UserApplyDao
@@ -50,6 +51,12 @@ public class UserApplyDao extends ServiceImpl<UserApplyMapper, UserApply> {
         return Math.toIntExact(lambdaQuery().eq(UserApply::getTargetId, targetId)
                 .eq(UserApply::getReadStatus, UNREAD.getCode())
                 .count());
+    }
+
+    public void agree(Long applyId) {
+        lambdaUpdate().set(UserApply::getStatus, AGREE.getCode())
+                .eq(UserApply::getId, applyId)
+                .update();
     }
 
 }
