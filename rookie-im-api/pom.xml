@@ -41,8 +41,8 @@
         <hutool.version>5.8.26</hutool.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <nacos-config.version>0.3.0-RC</nacos-config.version>
-
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
+        <openapi.version>4.4.0</openapi.version>
     </properties>
 
     <dependencyManagement>
@@ -167,6 +167,16 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>transmittable-thread-local</artifactId>
                 <version>${transmittable-thread-local.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${openapi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
+                <version>${openapi.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

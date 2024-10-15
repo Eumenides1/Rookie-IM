@@ -64,3 +64,24 @@ mybatis:
 ##########################  log 日志  ################################
 logging:
   config: classpath:logback-spring.xml
+
+# springdoc-openapi 项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan:
+        # 配置接口文档扫描包路径，每个服务的路径不同
+        - com.rookie.stack.user.auth.controller
+
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: false
+  setting:
+    language: zh_cn
