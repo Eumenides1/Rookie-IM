@@ -1,5 +1,6 @@
 package com.rookie.stack.im.friend.domain.model.req;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,9 +18,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "好友关系检查实体类")
 public class FriendCheckReq {
 
     @NotNull(message = "好友 ID 不能为空")
+    @Schema(description = "好友 ID")
     private Long friendId;
 
 }

@@ -35,25 +35,21 @@ public class UserController {
         userService.updateUserInfo(req);
         return ApiResult.success("用户信息更新成功");
     }
-
     @PostMapping("/register")
     @Operation(summary = "用户注册 API")
     public ApiResult<Long> register(@Validated @RequestBody RegisterUserReq req){
         return ApiResult.success(userService.register(req));
     }
-
     @PostMapping("/getUserByPhone")
     @Operation(summary = "根据手机号码获取用户信息 API")
     public ApiResult<GetUserInfoResp> getUserByPhone(@Validated @RequestBody GetUserByPhoneReq req){
         return ApiResult.success(userService.getUserByPhone(req));
     }
-
     @PostMapping("/getUserByRookieId")
     @Operation(summary = "根据ID获取用户信息 API")
     public ApiResult<GetUserInfoResp> getUserByRookieId(){
         return ApiResult.success(userService.getUserByRookieId());
     }
-
     @PostMapping("/updatePassword")
     @Operation(summary = "更新用户密码")
     public ApiResult<?> updatePassword(@Validated @RequestBody UpdateUserPasswordReq req){

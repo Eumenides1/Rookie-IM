@@ -44,5 +44,11 @@ public interface FriendService {
      */
     FriendUnreadResp unread();
 
+    /**
+     * 通过好友申请
+     * @param request
+     */
     void applyApprove(FriendApproveReq request);
+
+    void deleteFriend(Long friendUid);
 }

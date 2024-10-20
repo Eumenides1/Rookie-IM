@@ -132,6 +132,20 @@ public class FriendServiceImpl implements FriendService {
         // TODO 发送好友添加成功消息推送
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteFriend(Long friendUid) {
+        Long userId = LoginUserContextHolder.getUserId();
+        List<UserFriend> userFriends = userFriendDao.getUserFriend(userId, friendUid);
+        if (CollectionUtil.isEmpty(userFriends)) {
+            log.info("没有好友关系：{},{}", userId, friendUid);
+            return;
+        }
+        List<Long> friendRecordIds = userFriends.stream().map(UserFriend::getId).collect(Collectors.toList());
+        userFriendDao.removeByIds(friendRecordIds);
+        //TODO 禁用好友聊天房间
+    }
+
     private void readApples(Long uid, IPage<UserApply> userApplyIPage) {
         List<Long> applyIds = userApplyIPage.getRecords()
                 .stream().map(UserApply::getId)

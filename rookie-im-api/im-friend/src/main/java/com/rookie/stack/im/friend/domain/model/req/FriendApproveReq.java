@@ -1,5 +1,6 @@
 package com.rookie.stack.im.friend.domain.model.req;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "好友申请记录请求实体")
 public class FriendApproveReq {
     @NotNull
+    @Schema(description = "好友申请 ID")
     private Long applyId;
 }
